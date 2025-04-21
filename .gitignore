@@ -1,0 +1,22 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+
+# 环境变量文件
+.env
+
+
+# 虚拟环境
+venv/
+env/
+.venv/
+
+# 日志和临时文件
+*.log
+*.tmp
+temp/
+
+
+chroma_db/

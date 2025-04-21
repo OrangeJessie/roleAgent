@@ -1,0 +1,14 @@
+{
+    "vector_store": {
+      "collection_name": "chinese_love_fiction",
+      "model_name": "BAAI/bge-large-zh-v1.5",
+      "db_path": "./chroma_db",
+      "default_input_file": "./resources/红楼梦.txt",
+      "chunk_size": 100,
+      "chunk_overlap": 50
+    },
+    "chroma_db_path": "./chroma_db",
+    "collection_name": "chinese_love_fiction",
+    "embedding_model": "BAAI/bge-large-zh-v1.5",
+    "max_results": 5
+}
