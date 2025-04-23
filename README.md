@@ -59,6 +59,42 @@ roleAgent/
 │   └── chinese_fiction.json
 ├── resources/
 │   └── history/
+
+## 向量数据库构建说明
+
+本项目基于 Chroma 向量数据库实现文档检索。首次使用前需生成数据库：
+
+1. **准备配置文件**
+   - 配置路径：`config/chinese_fiction.json`
+   - 配置内容包括模型名称、数据库路径、待入库文本文件路径、分块参数等
+
+2. **生成数据库**
+   - 进入项目根目录，运行：
+     ```bash
+     python src/generate_db/main.py
+     ```
+   - 该脚本会自动读取配置文件，将指定文本切分后写入 Chroma 向量数据库
+
+3. **路径说明**
+   - 推荐将 `main.py` 中的配置文件路径设置为绝对路径，或使用如下写法保证兼容性：
+     ```python
+     import os
+     config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../config/chinese_fiction.json'))
+     vector_store = ChromaVectorStore(config_path)
+     ```
+   - 也可直接使用相对路径（以项目根目录为基准）：`config/chinese_fiction.json`
+
+4. **依赖说明**
+   - 需提前安装 requirements.txt 中的依赖，主要包括：
+     - `chromadb`
+     - `sentence-transformers`
+     - 其它相关包
+
+5. **常见问题**
+   - 路径不正确会导致找不到配置文件或文本文件，请确保路径与实际文件结构一致。
+   - 数据库默认生成在 `chroma_db/` 目录下。
+
+生成后即可通过主程序进行检索与问答。
 ├── chroma_db/
 ├── requirements.txt
 ├── .env

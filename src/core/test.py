@@ -1,5 +1,7 @@
 from retrieve_related import VectorRetriever
 from src.core.rag_system import RAGSystem
+import os
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 import warnings
 warnings.filterwarnings("ignore")
 

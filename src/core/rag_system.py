@@ -1,11 +1,13 @@
 
+import warnings
+warnings.filterwarnings("ignore")
+
 from pathlib import Path
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from src.prompts.manager import PromptManager
 from src.core.retrieve_related import VectorRetriever
 import os
-
 
 # 加载环境变量
 load_dotenv()
@@ -37,13 +39,13 @@ class RAGSystem:
             question=question,
             use_history=use_history
         )
-        # print(prompt)
+        print(prompt)
         # self.prompt_manager.add_to_history(question, "测试回答")
         
         # 调用模型生成回答
         response = self.llm.invoke(prompt)
         
-        # 添加到历史记录
+        # # 添加到历史记录
         self.prompt_manager.add_to_history(question, response.content)
         
         return response.content

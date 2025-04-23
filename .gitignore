@@ -21,4 +21,4 @@ temp/
 
 chroma_db/
 
-.resources/history
+.resources/history/*
