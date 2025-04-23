@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from src.prompts.manager import PromptManager
 from retrieve_related import VectorRetriever
-import sys
 import os
 
 
@@ -16,7 +15,8 @@ class RAGSystem:
         # 初始化模型
         self.llm = ChatOpenAI(
             api_key=os.getenv("DASHSCOPE_API_KEY"),
-            base_url="https://dashscope.aliyuncs.com/compatible-mode/v1"
+            base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+            model="deepseek-r1-distill-qwen-32b"
         )
         
         # 初始化向量数据库
@@ -27,7 +27,7 @@ class RAGSystem:
         
     def query(self, question: str, use_history: bool = False):
         """查询系统"""
-        
+
         # 检索相关文档
         retrieved_docs = self.retriever.retrieve(question)
         
@@ -38,11 +38,12 @@ class RAGSystem:
             use_history=use_history
         )
         print(prompt)
+        self.prompt_manager.add_to_history(question, "测试回答")
         
         # 调用模型生成回答
         # response = self.llm.invoke(prompt)
         
-        # # 添加到历史记录
+        # 添加到历史记录
         # self.prompt_manager.add_to_history(question, response.content)
         
         # return response.content

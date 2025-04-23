@@ -25,7 +25,7 @@ QA_TEMPLATE = """{system_prompt}
 {context_template}
 {user_prompt}
 
-我的问题是：{question}
+{question}
 请回答："""
 
 # 历史对话模板
