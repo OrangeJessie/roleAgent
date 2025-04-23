@@ -17,7 +17,7 @@ def main():
             print("历史已清空并归档！")
             continue
         response = rs.query(user_input, use_history=True)
-        # print(response)
+        print(response)
 
 
 if __name__ == "__main__":

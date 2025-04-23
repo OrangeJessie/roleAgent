@@ -37,14 +37,14 @@ class RAGSystem:
             question=question,
             use_history=use_history
         )
-        print(prompt)
-        self.prompt_manager.add_to_history(question, "测试回答")
+        # print(prompt)
+        # self.prompt_manager.add_to_history(question, "测试回答")
         
-        # 调用模型生成回答
-        # response = self.llm.invoke(prompt)
+        调用模型生成回答
+        response = self.llm.invoke(prompt)
         
-        # 添加到历史记录
-        # self.prompt_manager.add_to_history(question, response.content)
+        添加到历史记录
+        self.prompt_manager.add_to_history(question, response.content)
         
-        # return response.content
+        return response.content
         
