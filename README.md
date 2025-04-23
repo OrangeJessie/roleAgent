@@ -59,6 +59,12 @@ roleAgent/
 │   └── chinese_fiction.json
 ├── resources/
 │   └── history/
+├── chroma_db/
+├── requirements.txt
+├── .env
+└── README.md
+```
+
 
 ## 向量数据库构建说明
 
@@ -95,11 +101,6 @@ roleAgent/
    - 数据库默认生成在 `chroma_db/` 目录下。
 
 生成后即可通过主程序进行检索与问答。
-├── chroma_db/
-├── requirements.txt
-├── .env
-└── README.md
-```
 
 ## 相关依赖
 - langchain
