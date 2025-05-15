@@ -1,113 +1,81 @@
-# MCP Tools - 大语言模型工具集成系统
+# 周棋洛智能助手
 
-MCP Tools（Model Control Protocol Tools）是一个集成了多种工具的大语言模型助手，允许 AI 模型根据需要自动调用各种本地和网络工具，例如查询本地数据库、执行网络搜索以及操作 macOS 应用程序等。
+本项目是一个本地可运行的多工具大语言模型助手，支持本地知识库检索、网络搜索、macOS 应用集成，并拥有美观的莫兰迪风格前端界面和多会话管理能力。
 
-## 功能特点
+## 功能亮点
 
-- **本地向量数据库查询**：可以在本地知识库中进行语义搜索
-- **网络搜索**：使用百度搜索引擎检索网络信息
-- **macOS 应用程序集成**：可以打开计算器、日历和备忘录等应用
-- **类似 ChatGPT 的界面**：用户友好的聊天界面，支持历史会话管理
-- **可扩展的工具系统**：易于添加新的工具和功能
+- **本地向量数据库检索**：可选开关，支持语义搜索本地知识库
+- **网络搜索**：集成百度搜索
+- **macOS 应用集成**：一键打开计算器、日历、备忘录等
+- **多会话管理**：支持新建、切换、删除会话，历史自动保存
+- **现代化前端**：莫兰迪灰黑色风格，气泡式聊天，支持头像、流畅体验
+- **可扩展工具系统**：便于添加自定义工具
 
 ## 系统架构
 
-系统由三个主要部分组成：
+- **前端**：HTML/CSS/JS，响应式聊天界面，支持会话管理和数据库检索开关
+- **后端**：FastAPI 提供 RESTful API
+- **RAG/Agent**：支持本地知识库、外部API、工具调用
 
-1. **前端**：基于 HTML、CSS 和 JavaScript 的网页界面，类似 ChatGPT
-2. **后端 API**：基于 FastAPI 的 RESTful API，处理请求和响应
-3. **Agent**：负责与 OpenAI API 交互并调用工具
+## 安装与启动
 
-## 安装与设置
+1. 安装依赖
 
-### 安装依赖
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-```bash
-pip install -r requirements.txt
-```
+2. 配置环境变量（如需 OpenAI/阿里云API）
 
-### 配置环境变量
+   ```
+   OPENAI_API_KEY=your_api_key_here
+   DASHSCOPE_API_KEY=your_dashscope_key
+   ```
 
-创建 `.env` 文件，添加您的 OpenAI API 密钥：
+3. 启动应用
 
-```
-OPENAI_API_KEY=your_api_key_here
-```
+   ```bash
+   python src/main.py
+   ```
 
-## 使用方法
+   默认会自动打开浏览器访问前端页面。
 
-### 启动应用
+4. 命令行参数
 
-```bash
-python src/main.py
-```
+   - `--no-browser`：不自动打开浏览器
+   - `--frontend-port PORT`：指定前端端口（默认8080）
+   - `--backend-port PORT`：指定后端端口（默认8000）
 
-这将同时启动前端和后端服务器，并自动在浏览器中打开应用。
+## 使用说明
 
-### 命令行选项
-
-- `--no-browser`：不自动打开浏览器
-- `--frontend-port PORT`：指定前端服务器端口（默认：8080）
-- `--backend-port PORT`：指定后端服务器端口（默认：8000）
-
-示例：
-
-```bash
-python src/main.py --frontend-port 3000 --backend-port 5000
-```
-
-## 支持的工具
-
-1. **search_local_database**：在本地向量数据库中查询信息
-2. **baidu_search**：在百度搜索引擎中查询信息
-3. **open_calculator**：打开 macOS 计算器应用
-4. **open_calendar**：打开 macOS 日历应用
-5. **open_notes**：打开 macOS 备忘录应用并可选择性地创建新笔记
+- 聊天界面支持多会话，历史自动保存
+- 输入框旁可切换"检索数据库"开关，决定是否启用本地知识库
+- 支持发送多轮对话，AI助手可自动调用本地/网络工具
+- 会话历史保存在 `resources/default_history/` 目录下
 
 ## 扩展工具
 
-要添加新的工具，请修改 `src/core/mcp_tools.py` 文件，添加新的静态方法，然后在 `src/backend/agent.py` 的 `_get_tools` 方法中添加对应的工具定义。
+如需添加新工具，修改 `src/core/mcp_tools.py`，并在后端注册即可。
 
 示例：
 
-     ```python
-# 在 mcp_tools.py 中添加新工具
+```python
+# mcp_tools.py
 @staticmethod
-def new_tool(param1, param2):
-    """工具的描述"""
-    try:
-        # 工具的实现
-        return {"status": "success", "result": "..."}
-    except Exception as e:
-        return {"status": "error", "message": str(e)}
-
-# 在 agent.py 的 _get_tools 方法中添加工具定义
-{
-    "type": "function",
-    "function": {
-        "name": "new_tool",
-        "description": "工具的描述",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "param1": {
-                    "type": "string",
-                    "description": "参数1的描述"
-                },
-                "param2": {
-                    "type": "integer",
-                    "description": "参数2的描述"
-                }
-            },
-            "required": ["param1"]
-        }
-    }
-}
+def new_tool(param1):
+    # 工具实现
+    return {"status": "success", "result": "xxx"}
 ```
+
+## 界面示例
+
+- 莫兰迪灰黑色输入区
+- 气泡式对话，头像可自定义
+- 支持会话切换与删除
 
 ## 贡献
 
-欢迎提交 Issues 和 Pull Requests 来帮助改进这个项目。
+欢迎提交 Issue 或 PR 参与改进！
 
 ## 许可证
 
