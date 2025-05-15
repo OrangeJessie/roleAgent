@@ -22,3 +22,4 @@ temp/
 chroma_db/
 
 .resources/history/*
+.resources/default_history/*

@@ -1,113 +1,114 @@
-# roleAgent
+# MCP Tools - 大语言模型工具集成系统
 
-一个基于 RAG（检索增强生成）的智能问答系统，支持向量检索、LLM 生成、对话历史持久化和归档。
+MCP Tools（Model Control Protocol Tools）是一个集成了多种工具的大语言模型助手，允许 AI 模型根据需要自动调用各种本地和网络工具，例如查询本地数据库、执行网络搜索以及操作 macOS 应用程序等。
 
-## 主要功能
-- 支持基于 Chroma 向量数据库的文档检索
-- 集成大语言模型（如 deepseek-r1-distill-qwen-32b）进行智能问答
-- 支持多轮对话历史管理与持久化
-- 历史记录可归档，便于溯源和分析
-- 命令行交互，可随时清空历史并归档
+## 功能特点
 
-## 安装依赖
+- **本地向量数据库查询**：可以在本地知识库中进行语义搜索
+- **网络搜索**：使用百度搜索引擎检索网络信息
+- **macOS 应用程序集成**：可以打开计算器、日历和备忘录等应用
+- **类似 ChatGPT 的界面**：用户友好的聊天界面，支持历史会话管理
+- **可扩展的工具系统**：易于添加新的工具和功能
+
+## 系统架构
+
+系统由三个主要部分组成：
+
+1. **前端**：基于 HTML、CSS 和 JavaScript 的网页界面，类似 ChatGPT
+2. **后端 API**：基于 FastAPI 的 RESTful API，处理请求和响应
+3. **Agent**：负责与 OpenAI API 交互并调用工具
+
+## 安装与设置
+
+### 安装依赖
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 配置说明
-- 请在项目根目录下配置 `.env` 文件，填写 API KEY 等环境变量
-- 默认使用 `config/chinese_fiction.json` 作为检索配置文件
-- 向量数据库目录为 `chroma_db/`
+### 配置环境变量
+
+创建 `.env` 文件，添加您的 OpenAI API 密钥：
+
+```
+OPENAI_API_KEY=your_api_key_here
+```
 
 ## 使用方法
 
-### 命令行交互
-
-运行测试脚本：
+### 启动应用
 
 ```bash
-python src/core/test.py
+python src/main.py
 ```
 
-- 输入你的问题，系统会自动检索相关文档并生成回答
-- 输入 `clear` 可清空当前历史并自动归档历史文件
-- 历史文件保存在 `resources/history/{user_id}/` 目录下，每次清空自动归档为时间戳文件，当前历史为 `current.json`
+这将同时启动前端和后端服务器，并自动在浏览器中打开应用。
 
-### 代码调用
+### 命令行选项
 
-可通过 `RAGSystem` 和 `PromptManager` 进行自定义集成，示例见 `src/core/rag_system.py` 和 `src/core/test.py`
+- `--no-browser`：不自动打开浏览器
+- `--frontend-port PORT`：指定前端服务器端口（默认：8080）
+- `--backend-port PORT`：指定后端服务器端口（默认：8000）
 
-## 历史管理说明
-- 历史记录自动持久化，支持多用户隔离
-- 每次清空历史时，自动将当前历史归档为带时间戳的 JSON 文件
-- 历史文件便于后续分析和追溯
+示例：
 
-## 目录结构简述
-```
-roleAgent/
-├── src/
-│   ├── core/
-│   │   ├── rag_system.py
-│   │   ├── retrieve_related.py
-│   │   └── test.py
-│   ├── prompts/
-│   │   ├── manager.py
-│   │   ├── templates.py
-│   │   └── test.py
-├── config/
-│   └── chinese_fiction.json
-├── resources/
-│   └── history/
-├── chroma_db/
-├── requirements.txt
-├── .env
-└── README.md
+```bash
+python src/main.py --frontend-port 3000 --backend-port 5000
 ```
 
+## 支持的工具
 
-## 向量数据库构建说明
+1. **search_local_database**：在本地向量数据库中查询信息
+2. **baidu_search**：在百度搜索引擎中查询信息
+3. **open_calculator**：打开 macOS 计算器应用
+4. **open_calendar**：打开 macOS 日历应用
+5. **open_notes**：打开 macOS 备忘录应用并可选择性地创建新笔记
 
-本项目基于 Chroma 向量数据库实现文档检索。首次使用前需生成数据库：
+## 扩展工具
 
-1. **准备配置文件**
-   - 配置路径：`config/chinese_fiction.json`
-   - 配置内容包括模型名称、数据库路径、待入库文本文件路径、分块参数等
+要添加新的工具，请修改 `src/core/mcp_tools.py` 文件，添加新的静态方法，然后在 `src/backend/agent.py` 的 `_get_tools` 方法中添加对应的工具定义。
 
-2. **生成数据库**
-   - 进入项目根目录，运行：
-     ```bash
-     python src/generate_db/main.py
-     ```
-   - 该脚本会自动读取配置文件，将指定文本切分后写入 Chroma 向量数据库
+示例：
 
-3. **路径说明**
-   - 推荐将 `main.py` 中的配置文件路径设置为绝对路径，或使用如下写法保证兼容性：
      ```python
-     import os
-     config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../config/chinese_fiction.json'))
-     vector_store = ChromaVectorStore(config_path)
-     ```
-   - 也可直接使用相对路径（以项目根目录为基准）：`config/chinese_fiction.json`
+# 在 mcp_tools.py 中添加新工具
+@staticmethod
+def new_tool(param1, param2):
+    """工具的描述"""
+    try:
+        # 工具的实现
+        return {"status": "success", "result": "..."}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
-4. **依赖说明**
-   - 需提前安装 requirements.txt 中的依赖，主要包括：
-     - `chromadb`
-     - `sentence-transformers`
-     - 其它相关包
+# 在 agent.py 的 _get_tools 方法中添加工具定义
+{
+    "type": "function",
+    "function": {
+        "name": "new_tool",
+        "description": "工具的描述",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "param1": {
+                    "type": "string",
+                    "description": "参数1的描述"
+                },
+                "param2": {
+                    "type": "integer",
+                    "description": "参数2的描述"
+                }
+            },
+            "required": ["param1"]
+        }
+    }
+}
+```
 
-5. **常见问题**
-   - 路径不正确会导致找不到配置文件或文本文件，请确保路径与实际文件结构一致。
-   - 数据库默认生成在 `chroma_db/` 目录下。
+## 贡献
 
-生成后即可通过主程序进行检索与问答。
+欢迎提交 Issues 和 Pull Requests 来帮助改进这个项目。
 
-## 相关依赖
-- langchain
-- chromadb
-- sentence-transformers
-- langchain-openai
-- dotenv
+## 许可证
 
-## 贡献与反馈
-如需定制功能、反馈 bug 或贡献代码，欢迎 issue 或 PR。
+MIT

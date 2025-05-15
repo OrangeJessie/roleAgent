@@ -1,4 +1,3 @@
-
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -27,11 +26,13 @@ class RAGSystem:
         # 初始化prompt管理器
         self.prompt_manager = PromptManager(user_id)
         
-    def query(self, question: str, use_history: bool = False):
+    def query(self, question: str, use_history: bool = False, use_db: bool = True):
         """查询系统"""
 
-        # 检索相关文档
-        retrieved_docs = self.retriever.retrieve(question)
+        if use_db:
+            retrieved_docs = self.retriever.retrieve(question)
+        else:
+            retrieved_docs = []
         
         # 使用prompt管理器格式化prompt
         prompt = self.prompt_manager.get_qa_prompt(
@@ -39,14 +40,15 @@ class RAGSystem:
             question=question,
             use_history=use_history
         )
-        print(prompt)
+        # print(prompt)
         # self.prompt_manager.add_to_history(question, "测试回答")
         
         # 调用模型生成回答
         response = self.llm.invoke(prompt)
         
-        # # 添加到历史记录
+        # 添加到历史记录
         self.prompt_manager.add_to_history(question, response.content)
         
         return response.content
+        # return prompt
         
